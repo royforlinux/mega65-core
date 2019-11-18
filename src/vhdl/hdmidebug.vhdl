@@ -21,10 +21,8 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 use Std.TextIO.all;
-library UNISIM;
-use UNISIM.vcomponents.all;
 use work.cputypes.all;
-                
+
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
 --use IEEE.NUMERIC_STD.ALL;
@@ -196,8 +194,8 @@ entity container is
          ----------------------------------------------------------------------
          -- I2C on-board peripherals
          ----------------------------------------------------------------------
-         fpga_sda : out std_logic := '0';
-         fpga_scl : out std_logic := '0';         
+         fpga_sda : inout std_logic;
+         fpga_scl : inout std_logic;         
          
          ----------------------------------------------------------------------
          -- Serial monitor interface
@@ -234,66 +232,8 @@ architecture Behavioral of container is
 
   signal zero : std_logic := '0';
   signal one : std_logic := '1';
-
-  signal CFGCLK : std_logic;
-  signal CFGMCLK : std_logic;
-  signal EOS : std_logic;
-  signal PREQ : std_logic := '0';
-  signal CLK : std_logic := '0';
-  signal GSR : std_logic := '0';
-  signal GTS : std_logic := '0';
-  signal KEYCLEARB : std_logic := '0';
-  signal PACK : std_logic := '0';
-  signal USRCCLKO : std_logic := '0';
-  signal USRCCLKTS : std_logic := '0';
-  signal USRDONEO : std_logic := '1';
-  signal USRDONETS : std_logic := '0';
-
-  signal h_audio_left : unsigned(19 downto 0) := to_unsigned(0,20);
-  signal h_audio_right : unsigned(19 downto 0) := to_unsigned(0,20);
-
-  signal counter : integer := 0;
-  signal trigger_reconfigure : std_logic := '0';
   
 begin
-
---STARTUPE2:STARTUPBlock--7Series
-
---XilinxHDLLibrariesGuide,version2012.4
-  STARTUPE2_inst: STARTUPE2
-    generic map(PROG_USR=>"FALSE", --Activate program event security feature.
-                                   --Requires encrypted bitstreams.
-  SIM_CCLK_FREQ=>10.0 --Set the Configuration Clock Frequency(ns) for simulation.
-    )
-    port map(
---      CFGCLK=>CFGCLK,--1-bit output: Configuration main clock output
---      CFGMCLK=>CFGMCLK,--1-bit output: Configuration internal oscillator
-                              --clock output
---             EOS=>EOS,--1-bit output: Active high output signal indicating the
-                      --End Of Startup.
---             PREQ=>PREQ,--1-bit output: PROGRAM request to fabric output
-             CLK=>'0',--1-bit input: User start-up clock input
-             GSR=>'0',--1-bit input: Global Set/Reset input (GSR cannot be used
-                      --for the port name)
-             GTS=>'0',--1-bit input: Global 3-state input (GTS cannot be used
-                      --for the port name)
-             KEYCLEARB=>'0',--1-bit input: Clear AES Decrypter Key input
-                                  --from Battery-Backed RAM (BBRAM)
-             PACK=>'0',--1-bit input: PROGRAM acknowledge input
-
-             -- Put CPU clock out on the QSPI CLOCK pin
-             USRCCLKO=>cpuclock,--1-bit input: User CCLK input
-             USRCCLKTS=>'0',--1-bit input: User CCLK 3-state enable input
-
-             -- Assert DONE pin
-             USRDONEO=>'1',--1-bit input: User DONE pin output control
-             USRDONETS=>'1' --1-bit input: User DONE 3-state enable output
-             );
--- End of STARTUPE2_inst instantiation
-
-  reconfig1: entity work.reconfig
-    port map ( clock => cpuclock,
-               trigger_reconfigure => trigger_reconfigure);
 
   dotclock1: entity work.dotclock100
     port map ( clk_in1 => CLK_IN,
@@ -416,14 +356,10 @@ begin
       hdmi_sda => hdmi_sda
       );
 
-  hdmiaudio: entity work.hdmi_spdif
-    generic map ( samplerate => 44100 )
-    port map (
-      clk => clock100,
-      spdif_out => hdmi_spdif,
-      left_in => std_logic_vector(h_audio_left),
-      right_in => std_logic_vector(h_audio_right)
-      );
+  spdif0: entity work.spdf_out port map(
+    clk => clock100,
+    spdif_out => hdmi_spdif
+    );
 
   PROCESS (PIXELCLOCK) IS
   BEGIN
@@ -445,26 +381,6 @@ begin
     -- Ethernet clock at 50MHz
     eth_clock <= ethclock;
 
-    -- Make a horrible triangle wave test audio pattern
-    h_audio_left <= h_audio_left + 32;
-    h_audio_right <= h_audio_right + 32;
-
-    if rising_edge(ethclock) then
-      counter <= counter + 1; 
-      if counter = (1*1048576) then
-        fpga_scl <= '1';
-      end if;
-      if counter = (2*1048576) then
-        fpga_sda <= '1';
-      end if;
-      if counter = (3*1048576) then
---      trigger_reconfigure <= '1';
-        counter <= 0;
-        fpga_scl <= '0';
-        fpga_sda <= '0';
-      end if;
-    end if;
-    
   end process;    
   
 end Behavioral;
