@@ -104,6 +104,7 @@ set files [list \
  "[file normalize "$origin_dir/src/vhdl/mega65kbd_to_matrix.vhdl"]"\
  "[file normalize "$origin_dir/zed_hdmi_720p/i2c_sender.vhd"]"\
  "[file normalize "$origin_dir/src/vhdl/vga_hdmi.vhdl"]"\
+ "[file normalize "$origin_dir/src/vhdl/spdif_encoder.vhdl"]"\
  "[file normalize "$origin_dir/spdif_out/spdf_out.vhd"]"\
  "[file normalize "$origin_dir/spdif_out/serialiser.vhd"]"\
  "[file normalize "$origin_dir/spdif_out/soundSource.vhd"]"\
@@ -143,6 +144,10 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 set file "zed_hdmi_720p/i2c_sender.vhd"
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+
+set file "src/vhdl/spdif_encoder.vhdl"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 
