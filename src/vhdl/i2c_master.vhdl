@@ -126,7 +126,7 @@ BEGIN
       data_rd <= "00000000";               --clear data read port
     ELSIF(clk'EVENT AND clk = '1') THEN
       IF(data_clk = '1' AND data_clk_prev = '0') THEN  --data clock rising edge
-        report "state = " & machine'image(state);
+--        report "state = " & machine'image(state);
         CASE state IS
           WHEN ready =>                      --idle state
             IF(ena = '1') THEN               --transaction requested
@@ -142,7 +142,7 @@ BEGIN
           WHEN start =>                      --start bit of transaction
             report "sending start for transaction";
             busy <= '1';                     --resume busy if continuous mode
-              report "sending command bit " & integer'image(bit_cnt) & " = " & std_logic'image(addr_rw(bit_cnt));
+--            report "sending command bit " & integer'image(bit_cnt) & " = " & std_logic'image(addr_rw(bit_cnt));
             sda_int <= addr_rw(bit_cnt);     --set first address bit to bus
             state <= command;                --go to command
           WHEN command =>                    --address and command byte of transaction
@@ -151,7 +151,7 @@ BEGIN
               bit_cnt <= 7;                  --reset bit counter for "byte" states
               state <= slv_ack1;             --go to slave acknowledge (command)
             ELSE                             --next clock cycle of command state
-              report "sending command bit " & integer'image(bit_cnt-1) & " = " & std_logic'image(addr_rw(bit_cnt-1));
+--              report "sending command bit " & integer'image(bit_cnt-1) & " = " & std_logic'image(addr_rw(bit_cnt-1));
               bit_cnt <= bit_cnt - 1;        --keep track of transaction bits
               sda_int <= addr_rw(bit_cnt-1); --write address/command bit to bus
               state <= command;              --continue with command
@@ -167,7 +167,7 @@ BEGIN
               state <= rd;                   --go to read byte
             END IF;
           WHEN wr =>                         --write byte of transaction
-            report "writing data bit " & integer'image(bit_cnt) & " of $" & to_hstring(data_tx) & " as " & std_logic'image(sda_int);
+--            report "writing data bit " & integer'image(bit_cnt);
             busy <= '1';                     --resume busy if continuous mode
             IF(bit_cnt = 0) THEN             --write byte transmit finished
               sda_int <= '1';                --release sda for slave acknowledge
@@ -179,7 +179,7 @@ BEGIN
               state <= wr;                   --continue writing
             END IF;
           WHEN rd =>                         --read byte of transaction
-            report "reading data bit " & integer'image(bit_cnt);
+--            report "reading data bit " & integer'image(bit_cnt);
             busy <= '1';                     --resume busy if continuous mode
             IF(bit_cnt = 0) THEN             --read byte receive finished
               IF(ena = '1' AND addr_rw = addr & rw) THEN  --continuing with another read at same address
@@ -189,6 +189,7 @@ BEGIN
               END IF;
               bit_cnt <= 7;                  --reset bit counter for "byte" states
               data_rd <= data_rx;            --output received data
+              report "Read byte $" & to_hstring(data_rx);
               state <= mstr_ack;             --go to master acknowledge
             ELSE                             --next clock cycle of read state
               bit_cnt <= bit_cnt - 1;        --keep track of transaction bits
@@ -199,7 +200,7 @@ BEGIN
               busy <= '0';                   --continue is accepted
               addr_rw <= addr & rw;          --collect requested slave address and command
               data_tx <= data_wr;            --collect requested data to write
-              report "Writing byte $" & to_hstring(data_wr) & " via slave_ack2";
+              report "Writing byte $" & to_hstring(data_rx);
               if addr_rw = addr & rw THEN   --continue transaction with
                                                         --another write
                 sda_int <= data_wr(bit_cnt); --write first bit of data
