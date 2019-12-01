@@ -604,8 +604,9 @@ begin
       slow_access_write => slow_access_write,
       slow_access_wdata => slow_access_wdata,
       slow_access_rdata => slow_access_rdata,
---      cpu_exrom => cpu_exrom,
---      cpu_game => cpu_game,
+--      cpu_exrom => cpu_exrom,      
+--      cpu_game => cpu_game,      
+      -- enable/disable cartridge with sw(8)
       cart_access_count => x"00",
 
       fpga_temperature => fpga_temperature,
