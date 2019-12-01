@@ -430,17 +430,17 @@ begin
       osk_toggle_key => osk_toggle_key,
       sector_buffer_mapped => sector_buffer_mapped,
 
-      -- enable/disable cartridge with sw(8)
+      -- No cartridge port on MEGAphone (yet ;)
       cpu_exrom => '1',
       cpu_game => '1',
-
+      
       power_down => power_down,
 
       pal50_select_out => pal50_select,
 
       -- Wire up a dummy caps_lock key on switch 8
-      caps_lock_key => '1',
-
+      caps_lock_key => '1',     
+      
       fa_fire => i2c_joya_fire,
       fa_up => i2c_joya_up,
       fa_left => i2c_joya_left,
