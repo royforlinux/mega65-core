@@ -3085,11 +3085,11 @@ begin
               -- Indicate fixed point on the frame
               -- (used by CPU to time entry into freeze routine for proper synchronisation.
               --  Also helps thumbnails to not have tears in them).
-              if vicii_ycounter = to_unsigned(255,9) then
-                viciv_frame_indicate <= '1';
-              else
-                viciv_frame_indicate <= '0';
-              end if;
+--              if vicii_ycounter = to_unsigned(255,9) then
+--                viciv_frame_indicate <= '1';
+--              else
+--                viciv_frame_indicate <= '0';
+--              end if;
               -- We update V400 position in this case, bug also in the
               -- alternate case below
               vicii_ycounter_v400 <= vicii_ycounter_v400 + 1;
