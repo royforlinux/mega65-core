@@ -361,13 +361,13 @@ begin
       
       -- Combine the pairs of SIDs
       -- Re-enable this when adding 4 sids
-      if sid4_enable='1' then
-        leftsid_audio_combined <= ("0"&leftsid_audio(17 downto 1)) + ("0"&frontsid_audio(17 downto 1));
-        rightsid_audio_combined <= ("0"&rightsid_audio(17 downto 1)) + ("0"&backsid_audio(17 downto 1));
-      else 
-        leftsid_audio_combined <= leftsid_audio;
-        rightsid_audio_combined <= rightsid_audio;
-      end if;
+--      if sid4_enable='1' then
+--        leftsid_audio_combined <= ("0"&leftsid_audio(17 downto 1)) + ("0"&frontsid_audio(17 downto 1));
+--        rightsid_audio_combined <= ("0"&rightsid_audio(17 downto 1)) + ("0"&backsid_audio(17 downto 1));
+--      else 
+--        leftsid_audio_combined <= leftsid_audio;
+--        rightsid_audio_combined <= rightsid_audio;
+--      end if;
       
       ampPWM_l_in <= headphones_left_out;
       ampPWM_r_in <= headphones_right_out;
