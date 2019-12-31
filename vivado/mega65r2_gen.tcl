@@ -94,6 +94,7 @@ set obj [get_filesets sources_1]
 # Import local files from the original project
 set files [list \
  "[file normalize "$origin_dir/ipcore_dir/dotclock100.vhd"]"\
+ "[file normalize "$origin_dir/src/vhdl/vga_hdmi.vhdl"]"\
  "[file normalize "$origin_dir/src/vhdl/debugtools.vhdl"]"\
  "[file normalize "$origin_dir/src/vhdl/cputypes.vhdl"]"\
  "[file normalize "$origin_dir/src/vhdl/victypes.vhdl"]"\
